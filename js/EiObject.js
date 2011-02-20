@@ -1,7 +1,6 @@
 var EiObject = function(config) {
-    var id = config.id;
+    this.id = config.id;
     var container = config.container;
-    var dataUrl = container.attr('dataUrl');
     var mapping = container.attr('mapping').split('.') || '';
     var template = config.template;
     var data = new Array();
@@ -9,42 +8,40 @@ var EiObject = function(config) {
     var eiArray = new Array();
     var eiTemplateArray = new Array();
 
-    var saveSubEiTemplate = function(idx, el){
-        console.log("saving sub ei: " + el);
-        var config= {};
+    var saveSubEiTemplate = function(idx, el) {
+        var config = {};
         config.id = $(el).attr('ei');
         config.container = $(el);
         config.template = $(el).html().replace(/%7B/g, '{').replace(/%7D/g, "}");
         eiTemplateArray.push(config);
     };
 
-    var processSubEi = function(idx, el){
-        console.log("processSubEi: " + el);
-        var config= {};
+    var processSubEi = function(idx, el) {
+        var config = {};
         config.id = $(el).ei;
         config.container = $(el);
         config.template = $(el).html().replace(/%7B/g, '{').replace(/%7D/g, "}");
         var mainEi = new EiObject(config);
-        mainEi.start();
+        mainEi.load($(el).attr('dataUrl'));
         eiArray.push(mainEi);
     };
 
-    var initData = function(rawData){
-       for (var i=0; i<mapping.length; i++){
-           rawData = rawData[mapping[i]];
-       }
-       data = ($.type(rawData) === 'array')? rawData: [rawData];
+    var initData = function(rawData) {
+        for (var i = 0; i < mapping.length; i++) {
+            rawData = rawData[mapping[i]];
+        }
+        data = ($.type(rawData) === 'array') ? rawData : [rawData];
     };
 
-    var render = function(){
+    var render = function() {
         var jsonObj = {};
         var result = '';
         var tmpl = '';
         var i = 0;
-        for (i=0; i<data.length; i++){
+        for (i = 0; i < data.length; i++) {
             jsonObj = data[i];
             tmpl = template;
-            for (var prop in jsonObj){
+            for (var prop in jsonObj) {
                 var regEx = eval('/{' + prop + '}/g');
                 tmpl = tmpl.replace(regEx, jsonObj[prop]);
             }
@@ -53,7 +50,7 @@ var EiObject = function(config) {
         container.html(result);
         //then replace SubEis
         var subEis = new Array();
-        for (i=0; i<eiTemplateArray.length; i++){
+        for (i = 0; i < eiTemplateArray.length; i++) {
             subEis = container.find('[ei=' + eiTemplateArray[i].id + ']');
             subEis.html(eiTemplateArray[i].template);
             $.each(subEis, processSubEi);
@@ -61,15 +58,15 @@ var EiObject = function(config) {
     };
 
     var callback = function() {
-        return function(data){
+        return function(data) {
             initData(data);
             render();
         }
     };
 
     //show Loading
-    var loading = config.loading || function(){
-       container.html("loading...");
+    var loading = config.loading || function() {
+        container.html("loading...");
     };
 
     //has subEis?
@@ -77,7 +74,8 @@ var EiObject = function(config) {
     $.each(subEis, saveSubEiTemplate);
     loading();
 
-    this.start = function(){
-        $.getJSON(dataUrl,callback());
+    this.load = function(url) {
+        dataUrl = url
+        $.getJSON(dataUrl, callback());
     }
 };
