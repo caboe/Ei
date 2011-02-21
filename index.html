@@ -7,11 +7,29 @@
     <script type="text/javascript" src="js/EiObject.js"></script>
 </head>
 <body>
-<select name="photoset" onchange="Ei.get('flickr').load('http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&photoset_id='+document.getElementsByName('photoset')[0].value+'&api_key=531e7a0d62fe823d91b9ebcfca750195&format=json&jsoncallback=?')" dataUrl="http://api.flickr.com/services/rest/?method=flickr.collections.getTree&user_id=24537538@N04&api_key=531e7a0d62fe823d91b9ebcfca750195&collection_id=72157624746422138&format=json&jsoncallback=?" mapping="collections.collection.0.set" ei="collections">
-      <option value="{id}">{title}</option>
+<ul eiData="[{title:'Sport'},{title:'Politk'},{title:'Wetter'},{title:'Kunst'},{title:'Technik'}]" eiId="liste">
+    <li>{title}</li>
+</ul>
+<a href='javascript:Ei.get("liste").render([{title: "Alles"},{title: "neu"},{title: "hier"},{title: "!"}])'>Alles neu
+    hier!</a>
+
+
+<div id="twitter" eiDataUrl="http://search.twitter.com/search.json?q=meal&callback=?" eiId="twitter" eiMapping="results"
+     eiRefresh="3" eiLoading="function(){}">
+    <div>{from_user}: {text}</div>
+</div>
+
+
+<select name="photoset"
+        onchange="Ei.get('flickr').load('http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&photoset_id='+document.getElementsByName('photoset')[0].value+'&api_key=531e7a0d62fe823d91b9ebcfca750195&format=json&jsoncallback=?')"
+        eiDataUrl="http://api.flickr.com/services/rest/?method=flickr.collections.getTree&user_id=24537538@N04&api_key=531e7a0d62fe823d91b9ebcfca750195&collection_id=72157624746422138&format=json&jsoncallback=?"
+        eiMapping="collections.collection.0.set" eiId="collections">
+    <option value="{id}">{title}</option>
 </select>
-<div id="a" dataUrl="http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&photoset_id=72157624621893921&api_key=531e7a0d62fe823d91b9ebcfca750195&format=json&jsoncallback=?" mapping="photoset.photo"  ei="flickr">
-  <img src="http://farm{farm}.static.flickr.com/{server}/{id}_{secret}_s.jpg" alt="{title}" title="{title}"/>
+
+<div eiDataUrl="http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&photoset_id=72157624621893921&api_key=531e7a0d62fe823d91b9ebcfca750195&format=json&jsoncallback=?"
+     eiMapping="photoset.photo" eiId="flickr">
+    <img src="http://farm{farm}.static.flickr.com/{server}/{id}_{secret}_s.jpg" alt="{title}" title="{title}"/>
 </div>
 </body>
 </html>
